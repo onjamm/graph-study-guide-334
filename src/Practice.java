@@ -1,8 +1,9 @@
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
-
+import java.util.Collections;
 public class Practice {
 
   /**
@@ -72,7 +73,31 @@ public class Practice {
    * @return a sorted list of all reachable vertex values by 
    */
   public static List<Integer> sortedReachable(Vertex<Integer> starting) {
-    return null;
+    //set of visited
+    Set<Vertex<Integer>> visited = new HashSet<>();
+    //run method to the list of reachables
+    List<Integer> reachable = reachable(starting, visited);
+    //sort reachables
+    Collections.sort(reachable);
+    //return reachbales
+    return reachable;
+  }
+
+  private static List<Integer> reachable(Vertex<Integer> current, Set<Vertex<Integer>> visited) {
+    List<Integer> result = new ArrayList<>();
+    if(current == null) {
+        return new ArrayList<>();
+    }
+
+    if (visited.contains(current)) return new ArrayList<>();
+
+    visited.add(current);
+    result.add(current.data);
+    for (Vertex<Integer> neighbor : current.neighbors) {
+        result.addAll(reachable(neighbor, visited));
+    }
+
+    return result;
   }
 
   /**
@@ -86,7 +111,27 @@ public class Practice {
    * @return a sorted list of all reachable vertex values
    */
   public static List<Integer> sortedReachable(Map<Integer, Set<Integer>> graph, int starting) {
-    return null;
+
+    Set<Integer> visited = new HashSet<>();
+    
+    List<Integer> result = reachable(starting, graph,visited);
+    
+    Collections.sort(result);
+    return result;
+  }
+
+  private static List<Integer> reachable(int current, Map<Integer, Set<Integer>> graph, Set<Integer> visited) {
+    List<Integer> result = new ArrayList<>();
+    //loop through the keys and add the values if not in our set of visted
+    if (graph.get(current) == null || visited.contains(current)) return new ArrayList<>();
+
+    visited.add(current);
+    result.add(current);
+    for (int neighbor : graph.get(current)) {
+        result.addAll(reachable(neighbor, graph, visited));
+    }
+
+    return result;
   }
 
   /**
